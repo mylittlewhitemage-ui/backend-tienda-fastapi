@@ -1,31 +1,12 @@
 from fastapi import APIRouter
-from database import cursor, conexion
+from services import clientes_service
 
 router = APIRouter(prefix="/clientes", tags=["Clientes"])
 
 @router.get("/")
 def ver_clientes():
-    cursor.execute("SELECT * FROM clientes")
-    resultado = cursor.fetchall()
-
-    clientes = []
-    for cliente in resultado:
-        clientes.append({
-            "id": cliente[0],
-            "nombre": cliente[1],
-            "email": cliente[2],
-            "ciudad": cliente[3]
-        })
-
-    return clientes
-
+    return clientes_service.listar_clientes()
 
 @router.post("/")
 def crear_cliente(nombre: str, email: str, ciudad: str):
-    cursor.execute(
-        "INSERT INTO clientes (nombre, email, ciudad) VALUES (?, ?, ?)",
-        (nombre, email, ciudad)
-    )
-    conexion.commit()
-
-    return {"mensaje": "Cliente creado"}
+    return clientes_service.crear_cliente(nombre, email, ciudad)

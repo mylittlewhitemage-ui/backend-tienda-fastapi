@@ -7,7 +7,7 @@ app = FastAPI()
 def inicio():
     return {"mensaje": "API funcionando correctamente"}
 
-# Registrar routers
 app.include_router(clientes.router)
 app.include_router(productos.router)
 app.include_router(pedidos.router)
+

@@ -1,31 +1,16 @@
 from fastapi import APIRouter
-from database import cursor, conexion
+from services import productos_service
 
 router = APIRouter(prefix="/productos", tags=["Productos"])
 
 @router.get("/")
-def mostrar_productos():
-    cursor.execute("SELECT * FROM productos")
-    resultado = cursor.fetchall()
-
-    productos = []
-    for producto in resultado:
-        productos.append({
-            "id": producto[0],
-            "nombre": producto[1],
-            "precio": producto[2],
-            "categoria": producto[3]
-        })
-
-    return productos
-
+def ver_productos():
+    return productos_service.listar_productos()
 
 @router.post("/")
 def crear_producto(nombre: str, precio: int, categoria: str):
-    cursor.execute(
-        "INSERT INTO productos (nombre, precio, categoria) VALUES (?, ?, ?)",
-        (nombre, precio, categoria)
-    )
-    conexion.commit()
+    return productos_service.crear_producto(nombre, precio, categoria)
 
-    return {"mensaje": "Producto creado"}
+@router.get("/mas-vendido")
+def producto_mas_vendido():
+    return productos_service.producto_mas_vendido()
